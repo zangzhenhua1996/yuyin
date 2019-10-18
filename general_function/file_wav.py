@@ -4,7 +4,7 @@
 import os  #操作系统文件的包
 import wave
 import numpy as np
-import matplotlib.pyplot as plt  
+# import matplotlib.pyplot as plt   #学院GPU服务器不能用
 import math
 import time
 
