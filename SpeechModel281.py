@@ -35,7 +35,7 @@ from keras.optimizers import SGD, Adadelta, Adam
 from readdata24 import DataSpeech 
 
 abspath = ''  #绝对路径
-ModelName='271'  #模型名
+ModelName='281'  #模型名
 #NUM_GPU = 2
 
 # 声学模型
