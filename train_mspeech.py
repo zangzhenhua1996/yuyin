@@ -13,7 +13,7 @@ from keras.backend.tensorflow_backend import set_session
 
 
 # from SpeechModel251 import ModelSpeech
-from SpeechModel271 import ModelSpeech #带LSTM
+from SpeechModel271_test import ModelSpeech #带LSTM
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 #进行配置，使用95%的GPU
