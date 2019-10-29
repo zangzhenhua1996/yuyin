@@ -19,6 +19,8 @@ import random
 from keras.models import Sequential, Model
 # 从神经网络层中导入 全连接层,随机失活,输入层,矩阵维度变换,BN归一化
 from keras.layers import Dense, Dropout, Input, Reshape, BatchNormalization # , Flatten
+from keras.layers import LSTM,Bidirectional,GRU
+from keras.layers.merge import add, concatenate
 # 从神经网络层中导入 ,Lambda层(如果你只是想对流经该层的数据做个变换，而这个变换本身没有什么需要学习的参数，那么直接用Lambda Layer是最合适的了。)
 # imeDistributed这个封装器将一个层应用于输入的每个时间片。
 # Activation 激活函数
@@ -34,7 +36,7 @@ from keras.optimizers import SGD, Adadelta, Adam
 from readdata24 import DataSpeech 
 
 abspath = ''  #绝对路径
-ModelName='251'  #模型名
+ModelName='291'  #模型名
 #NUM_GPU = 2
 
 # 声学模型
@@ -158,16 +160,24 @@ class ModelSpeech(): # 语音模型类
         
         # Reshape层将 200*25*128 的图进行变换 成 200*3200 (如果前面改动记得这里也是需要进行改动的)
         layer_h16 = Reshape((200, 3200))(layer_h15) #Reshape层
-
-        #layer_h5 = LSTM(256, activation='relu', use_bias=True, return_sequences=True)(layer_h4) # LSTM层
-        #layer_h6 = Dropout(0.2)(layer_h5) # 随机中断部分神经网络连接，防止过拟合
+        layer_h = Dense(128, activation="relu", use_bias=True, kernel_initializer='he_normal')(layer_h16) #全连接
         
-        #随机中断部分神经网络连接，防止过拟合
-        layer_h16 = Dropout(0.3)(layer_h16)
+        #GRU模块
+        rnn_size=128
+        gru_1 = GRU(rnn_size, return_sequences=True, kernel_initializer='he_normal', name='gru1')(inner)
+        gru_1b = GRU(rnn_size, return_sequences=True, go_backwards=True, kernel_initializer='he_normal', name='gru1_b')(inner)
+        gru1_merged = add([gru_1, gru_1b])
+        gru_2 = GRU(rnn_size, return_sequences=True, kernel_initializer='he_normal', name='gru2')(gru1_merged)
+        gru_2b = GRU(rnn_size, return_sequences=True, go_backwards=True, kernel_initializer='he_normal', name='gru2_b')(gru1_merged)
+        
+        gru2 = concatenate([gru_2, gru_2b])
+
+
+        layer_h = gru2
 
         # 全连接层 输入 200*3200 (200是时间序列也可以看做是200个样本,因为最后是每一行对应的1424个概率值)
         # 参数个数 (3200+1) * 128 = 409728
-        layer_h17 = Dense(128, activation="relu", use_bias=True, kernel_initializer='he_normal')(layer_h16) # 全连接层
+        layer_h17 = Dense(128, activation="relu", use_bias=True, kernel_initializer='he_normal')(layer_h) # 全连接层
         layer_h17 = Dropout(0.3)(layer_h17)
 
         # 全连接层 输入是200*128 这里的神经元的个数就是拼音的个数 

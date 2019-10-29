@@ -321,7 +321,7 @@ class ModelSpeech(): # 语音模型类
         f.close()
 
     # 模型的测试
-    def TestModel(self, datapath='', str_dataset='dev', data_count = 32, out_report = False, show_ratio = True, io_step_print = 10, io_step_file = 10):
+    def TestModel(self, datapath='', str_dataset='dev', data_count = 32, out_report = True, show_ratio = True, io_step_print = 10, io_step_file = 10):
         '''
         测试检验模型效果
         

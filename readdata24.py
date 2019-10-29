@@ -291,5 +291,5 @@ if(__name__=='__main__'):
 #       aa_list.append(i)
 # =============================================================================
 #   pass
-#   GG=l.GetData(1,n_amount=1)
+   GG=l.GetData(1,n_amount=1)
     
