@@ -170,7 +170,7 @@ class ModelSpeech(): # 语音模型类
         
 
         #随机中断部分神经网络连接，防止过拟合
-        layer_h16 = Dropout(0.3)(lstm1)
+        layer_h16 = lstm1
         # layer_h16 = Dropout(0.3)(layer_h16)
 
         # 全连接层 输入 200*3200 (200是时间序列也可以看做是200个样本,因为最后是每一行对应的1424个概率值)
